@@ -16,12 +16,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView gameTimer;
     private Button startTimer;
     private Button stopTimer;
-    private long timerInput = 1000000;
+    private long timerInput = 1500000;
     private long currentTime = 1000;
-    private boolean ButtonState = false;
-
     CountDownTimer AirsoftGameTime;
-
     NumberFormat TimerFormat = new DecimalFormat("00");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,46 +27,41 @@ public class MainActivity extends AppCompatActivity {
         gameTimer = findViewById(R.id.TV_Timer);
         startTimer = findViewById(R.id.BTN_StartTimer);
         stopTimer = findViewById(R.id.BTN_Stop);
-
+        gameTimer.setText("00:25:00");
+        //Start Stop Pause Buttons
         startTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(ButtonState == true){
+                if(startTimer.getText().equals("Start")){
+                    timer_start(timerInput);
+                }
+                else{
                     timerResume();
                     stopTimer.setText("Pause");
                     startTimer.setText("Start");
-                    ButtonState = false;
-                }
-                else{
-                    timerstart(timerInput);
                 }
 
             }
         });
-
         stopTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ButtonState == false) {
+                if (stopTimer.getText().equals("Pause")) {
                     timerPause();
-                    ButtonState = true;
                     stopTimer.setText("Reset");
                     startTimer.setText("Resume");
                     gameTimer.setText(TimerFormat.format((currentTime / 3600000) % 24) + ":" + TimerFormat.format((currentTime / 60000) % 60) + ":" + TimerFormat.format((currentTime / 1000) % 60));
                 } else {
                     AirsoftGameTime.cancel();
-                    ButtonState = false;
                     stopTimer.setText("Pause");
                     startTimer.setText("Start");
                     gameTimer.setText(TimerFormat.format((timerInput / 3600000) % 24) + ":" + TimerFormat.format((timerInput / 60000) % 60) + ":" + TimerFormat.format((timerInput / 1000) % 60));
                 }
-
             }
         });
-
     }
-    public void timerstart(long timeinMilli) {
-        AirsoftGameTime = new CountDownTimer(timerInput, 1000) {
+    public void timer_start(long timeinMilli) {
+        AirsoftGameTime = new CountDownTimer(timeinMilli, 1000) {
             public void onTick(long millisUntilFinished) {
                 currentTime = millisUntilFinished;
                 long hour = (millisUntilFinished / 3600000) % 24;
@@ -90,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void timerResume(){
-        timerstart(currentTime);
+        timer_start(currentTime);
     }
 
 }
